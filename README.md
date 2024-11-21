@@ -31,7 +31,13 @@ This module requires several new `nginx.conf` directives, which can be specified
 
 ## Algorithms
 
-The default algorithm is `HS256`, for symmetric key validation. When using one of the `HS*` algorithms, the value for `auth_jwt_key` should be specified in binhex format. It is recommended to use at least 256 bits of data (32 pairs of hex characters or 64 characters in total) as in the example above. Note that using more than 512 bits will not increase the security. For key guidelines please see [NIST Special Publication 800-107 Recommendation for Applications Using Approved Hash Algorithms](https://csrc.nist.gov/publications/detail/sp/800-107/rev-1/final), Section 5.3.2 The HMAC Key.
+The default algorithm is `HS256`, for symmetric key validation. When using one of the `HS*` algorithms, the value for `auth_jwt_key` should be specified in binhex format. It is recommended to use at least 256 bits of data (32 pairs of hex characters or 64 characters in total). Note that using more than 512 bits will not increase the security. For key guidelines please see [NIST Special Publication 800-107 Recommendation for Applications Using Approved Hash Algorithms](https://csrc.nist.gov/publications/detail/sp/800-107/rev-1/final), Section 5.3.2 The HMAC Key.
+
+To generate a 256-bit key (32 pairs of hex characters; 64 characters in total):
+
+```bash
+openssl rand -hex 32
+```
 
 ### Additional Supported Algorithms
 
@@ -225,7 +231,7 @@ The tests use a customized NGINX image, distinct from the main image, as well as
 
 After making changes and finding that some tests fail, it can be difficult to understand why. By default, logs are written to Docker's internal log mechanism, but they won't be persisted after the test run completes and the containers are removed.
 
-In order to persist logs, you can configure the log driver to use. You can do this by setting the environment variable `LOG_DRIVER` before running the tests. On Linux/Unix systems, you can use the driver `journald`, as follows:
+If you'd like to persist logs across test runs, you can configure the log driver to use `journald` (on Linux/Unix systems for example). You can do this by setting the environment variable `LOG_DRIVER` before running the tests:
 
 ```shell
 # need to rebuild the test runner with the proper log driver
